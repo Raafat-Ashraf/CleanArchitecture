@@ -1,4 +1,6 @@
-﻿using CleanArchitecture.Infrastructure.Persistence.Data;
+﻿using CleanArchitecture.Core.Interfaces;
+using CleanArchitecture.Infrastructure.Persistence;
+using CleanArchitecture.Infrastructure.Persistence.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,10 +11,12 @@ public static class ConfigureServices
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
         services
-            .AddDataBaseConfig(configuration);
+            .AddDataBaseConfig(configuration)
+            .AddRegistration();
 
         return services;
     }
+
 
     private static IServiceCollection AddDataBaseConfig(this IServiceCollection services, IConfiguration configuration)
     {
@@ -24,5 +28,12 @@ public static class ConfigureServices
         return services;
     }
 
+
+    private static IServiceCollection AddRegistration(this IServiceCollection services)
+    {
+        services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
+
+        return services;
+    }
 
 }
